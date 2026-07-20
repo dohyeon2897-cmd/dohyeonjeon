@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Dohyeon</title>
+<meta name="description" content="Have a project in mind? Book a 15-minute kickoff call or reach out directly.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">Dohyeon</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="blogs.html">Blog</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="contact.html" class="btn btn-primary">Let's chat <span class="btn-arrow">↗</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="projects.html">Projects</a>
+  <a href="about.html">About</a>
+  <a href="blogs.html">Blog</a>
+  <a href="contact.html">Contact</a>
+  <a href="contact.html" class="btn btn-primary">Let's chat</a>
+</div>
+
+<main>
+  <section class="section" style="padding-top:70px;">
+    <div class="container">
+      <div class="contact-wrap">
+        <div class="contact-info" data-reveal>
+          <div class="eyebrow">Contact</div>
+          <h1>Let's Collaborate</h1>
+          <p>Have a project in mind? Pick a time that works for you and let's talk it through, or reach out directly at <a href="mailto:dohyeon2897@gmail.com">dohyeon2897@gmail.com</a></p>
+        </div>
+
+        <div class="cal-embed" data-reveal>
+          <div id="my-cal-inline"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="text/javascript">
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement("script")).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === "string") {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ["initNamespace", namespace]);
+        } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, "https://app.cal.com/embed/embed.js", "init");
+
+  Cal("init", { origin: "https://cal.com" });
+
+  Cal("inline", {
+    elementOrSelector: "#my-cal-inline",
+    calLink: "dohyeon-jeon-ljpwws/15min",
+    config: { theme: "light" }
+  });
+
+  Cal("ui", {
+    hideEventTypeDetails: false,
+    layout: "month_view",
+    styles: { branding: { brandColor: "#0d0d0d" } }
+  });
+</script>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <a href="index.html" class="logo">Dohyeon</a>
+      <nav class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+          <a href="blogs.html">Blog</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dohyeon. All rights reserved.</span>    </div>
+  </div>
+</footer>
+
+<script src="assets/script.js"></script>
+</body>
+</html>
