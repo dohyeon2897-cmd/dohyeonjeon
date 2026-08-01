@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QBEJ5L3PR7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QBEJ5L3PR7');
+</script>
+<meta charset="UTF-8">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Info — Dohyeon</title>
+<meta name="description" content="Notes and insights from Dohyeon on web design, marketing, and building things.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://dohyeonjeon.com/insights.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dohyeon">
+<meta property="og:title" content="Info — Dohyeon">
+<meta property="og:description" content="Notes and insights from Dohyeon on web design, marketing, and building things.">
+<meta property="og:url" content="https://dohyeonjeon.com/insights.html">
+<meta property="og:image" content="https://dohyeonjeon.com/assets/profile.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Info — Dohyeon">
+<meta name="twitter:description" content="Notes and insights from Dohyeon on web design, marketing, and building things.">
+<meta name="twitter:image" content="https://dohyeonjeon.com/assets/profile.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">Dohyeon</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="blogs.html">Blog</a>
+      <a href="insights.html">Info</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="contact.html" class="btn btn-primary">Let's chat <span class="btn-arrow">↗</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="projects.html">Projects</a>
+  <a href="about.html">About</a>
+  <a href="blogs.html">Blog</a>
+  <a href="insights.html">Info</a>
+  <a href="contact.html">Contact</a>
+  <a href="contact.html" class="btn btn-primary">Let's chat</a>
+</div>
+
+<main>
+  <section class="hero container" style="padding-bottom:20px;">
+    <h1 data-reveal style="font-size:clamp(34px,6vw,64px)">Info</h1>
+    <p class="lead" data-reveal>Notes and insights, organized by topic.</p>
+  </section>
+
+  <section class="section" style="padding-top:30px;">
+    <div class="container">
+      <div class="insights-nav" id="insights-nav"></div>
+      <div id="insights-wrap">
+        <p class="insights-loading">Loading insights…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>Let's turn your website into a revenue driver.</h2>
+        <p>Have a project in mind? Let's build something that turns visitors into paying customers.</p>
+        <a href="contact.html" class="btn btn-primary">Let's chat <span class="btn-arrow">↗</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <a href="index.html" class="logo">Dohyeon</a>
+      <nav class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="blogs.html">Blog</a>
+        <a href="insights.html">Info</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dohyeon. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="assets/script.js"></script>
+<!-- Firebase (compat SDK — no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/12.17.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore-compat.js"></script>
+<script>
+(function () {
+  // ── Paste the same config you used in admin.html ──
+  var firebaseConfig = {
+    apiKey: "AIzaSyBd-1Aecd45mkYsXAnlUDb_-TnqCTlMdzM",
+    authDomain: "dohyeonjeon.firebaseapp.com",
+    projectId: "dohyeonjeon",
+    storageBucket: "dohyeonjeon.firebasestorage.app",
+    messagingSenderId: "887759868284",
+    appId: "1:887759868284:web:c8e51ac6ed42ae1b1e94f9"
+  };
+  // ───────────────────────────────────────────────────
+
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+
+  var wrap = document.getElementById('insights-wrap');
+  var navEl = document.getElementById('insights-nav');
+
+  function slugify(s) {
+    return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+
+  function formatDate(d) {
+    var date = new Date(d);
+    if (isNaN(date.getTime())) return d || '';
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  db.collection('posts').orderBy('date', 'desc').get()
+    .then(function (snap) {
+      if (snap.empty) {
+        wrap.innerHTML = '<p class="insights-loading">No insights posted yet — check back soon.</p>';
+        return;
+      }
+
+      var entries = [];
+      snap.forEach(function (doc) { entries.push(doc.data()); });
+
+      var groups = {};
+      var order = [];
+      entries.forEach(function (e) {
+        var cat = e.category || 'General';
+        if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+        groups[cat].push(e);
+      });
+
+      wrap.innerHTML = '';
+      navEl.innerHTML = '';
+
+      order.forEach(function (cat) {
+        var slug = slugify(cat);
+
+        var navLink = document.createElement('a');
+        navLink.href = '#' + slug;
+        navLink.className = 'filter-tab';
+        navLink.textContent = cat;
+        navEl.appendChild(navLink);
+
+        var section = document.createElement('div');
+        section.className = 'insights-section';
+        section.id = slug;
+
+        var heading = document.createElement('h2');
+        heading.textContent = cat;
+        section.appendChild(heading);
+
+        groups[cat].forEach(function (e) {
+          var article = document.createElement('article');
+          article.className = 'insight-entry';
+
+          var meta = document.createElement('div');
+          meta.className = 'insight-meta';
+          var dateSpan = document.createElement('span');
+          dateSpan.className = 'insight-date';
+          dateSpan.textContent = formatDate(e.date);
+          meta.appendChild(dateSpan);
+          article.appendChild(meta);
+
+          var h3 = document.createElement('h3');
+          h3.textContent = e.title || 'Untitled';
+          article.appendChild(h3);
+
+          var body = document.createElement('div');
+          body.className = 'post-body';
+          body.innerHTML = window.marked ? window.marked.parse(e.body || '') : '<p>' + escapeHtml(e.body || '') + '</p>';
+          article.appendChild(body);
+
+          section.appendChild(article);
+        });
+
+        wrap.appendChild(section);
+      });
+    })
+    .catch(function (err) {
+      wrap.innerHTML = '<p class="insights-error">Couldn\u2019t load insights right now — try refreshing in a moment.</p>';
+      console.error('Insights load failed:', err);
+    });
+})();
+</script>
+</body>
+</html>

@@ -711,6 +711,56 @@ button { font-family: inherit; cursor: pointer; }
   margin: 46px 0 16px;
 }
 .post-body p { margin: 0 0 22px; color: #3b3b3b; }
+.post-body h3 { font-size: 19px; letter-spacing: -0.005em; margin: 32px 0 12px; }
+.post-body ul, .post-body ol { margin: 0 0 22px; padding-left: 22px; color: #3b3b3b; }
+.post-body li { margin-bottom: 8px; }
+.post-body blockquote {
+  margin: 0 0 22px;
+  padding: 4px 0 4px 18px;
+  border-left: 2px solid var(--border);
+  color: var(--muted);
+  font-style: italic;
+}
+.post-body code {
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 15px;
+}
+.post-body a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Insights (Info) page ---------- */
+.insights-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.insights-section {
+  max-width: 700px;
+  margin: 0 auto 70px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.insights-section:first-of-type { border-top: none; padding-top: 0; }
+.insights-section h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+  margin: 0 0 30px;
+}
+.insight-entry { margin-bottom: 46px; }
+.insight-entry:last-child { margin-bottom: 0; }
+.insight-meta { margin-bottom: 6px; }
+.insight-date { color: var(--muted-2); font-size: 13px; }
+.insight-entry h3 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 14px; }
+.insight-entry .post-body { max-width: none; margin: 0; font-size: 16px; }
+.insights-loading, .insights-error {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 0;
+}
 .more-blogs-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--border); }
 .more-blogs-list a {
   display: flex; align-items: center; justify-content: space-between;

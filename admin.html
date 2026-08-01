@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Dohyeon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .admin-wrap { max-width: 640px; margin: 0 auto; padding: 60px 20px 100px; }
+  .admin-wrap h1 { font-size: 28px; margin: 0 0 6px; }
+  .admin-wrap .sub { color: var(--muted); font-size: 14px; margin: 0 0 36px; }
+  .admin-field { margin-bottom: 18px; }
+  .admin-field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--muted); }
+  .admin-field input, .admin-field select, .admin-field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 15px;
+    background: #fff;
+  }
+  .admin-field textarea { min-height: 220px; resize: vertical; line-height: 1.6; }
+  .admin-row { display: flex; gap: 14px; }
+  .admin-row > .admin-field { flex: 1; }
+  .admin-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    background: var(--fg);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .admin-btn:disabled { opacity: .5; cursor: default; }
+  .admin-msg { margin-top: 14px; font-size: 14px; min-height: 18px; }
+  .admin-msg.ok { color: #1a7f37; }
+  .admin-msg.err { color: #c62828; }
+  .admin-lock { max-width: 360px; margin: 100px auto; padding: 0 20px; text-align: center; }
+  .admin-lock input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; margin-bottom: 12px; }
+  .admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .admin-topbar button { background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
+  .post-list { margin-top: 60px; border-top: 1px solid var(--border); padding-top: 30px; }
+  .post-list h2 { font-size: 16px; margin: 0 0 16px; }
+  .post-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .post-row .info { min-width: 0; }
+  .post-row .info .t { font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .post-row .info .m { color: var(--muted-2); font-size: 12px; }
+  .post-row button { flex-shrink: 0; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 12px; cursor: pointer; color: #c62828; }
+</style>
+</head>
+<body>
+
+<div id="lock" class="admin-lock">
+  <h1 style="font-size:22px;margin-bottom:6px;">Admin</h1>
+  <p class="sub" style="margin-bottom:20px;">Sign in to write a post.</p>
+  <input type="email" id="email-input" placeholder="Email" autocomplete="username">
+  <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+  <button class="admin-btn" id="pw-submit" style="width:100%;">Sign in</button>
+  <p class="admin-msg err" id="pw-msg"></p>
+</div>
+
+<div id="panel" class="admin-wrap" style="display:none;">
+  <div class="admin-topbar">
+    <h1 style="margin:0;">Write a post</h1>
+    <button id="signout-btn">Sign out</button>
+  </div>
+  <p class="sub">Publishes straight to the Info page — no file uploads.</p>
+
+  <div class="admin-field">
+    <label for="f-title">Title</label>
+    <input type="text" id="f-title" placeholder="Post title">
+  </div>
+
+  <div class="admin-row">
+    <div class="admin-field">
+      <label for="f-category">Category</label>
+      <input type="text" id="f-category" list="cat-list" placeholder="e.g. Marketing">
+      <datalist id="cat-list"></datalist>
+    </div>
+    <div class="admin-field">
+      <label for="f-date">Date</label>
+      <input type="date" id="f-date">
+    </div>
+  </div>
+
+  <div class="admin-field">
+    <label for="f-body">Content (Markdown supported — ## heading, **bold**, - list)</label>
+    <textarea id="f-body" placeholder="Write your post..."></textarea>
+  </div>
+
+  <button class="admin-btn" id="publish-btn">Publish</button>
+  <p class="admin-msg" id="publish-msg"></p>
+
+  <div class="post-list">
+    <h2>Published posts</h2>
+    <div id="post-list-items"><p class="sub">Loading…</p></div>
+  </div>
+</div>
+
+<!-- Firebase (compat SDK — no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/12.17.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore-compat.js"></script>
+<script>
+(function () {
+  // ── Paste your Firebase project's config here (Firebase Console → ⚙ Project settings → Your apps → SDK setup and configuration) ──
+  var firebaseConfig = {
+    apiKey: "AIzaSyBd-1Aecd45mkYsXAnlUDb_-TnqCTlMdzM",
+    authDomain: "dohyeonjeon.firebaseapp.com",
+    projectId: "dohyeonjeon",
+    storageBucket: "dohyeonjeon.firebasestorage.app",
+    messagingSenderId: "887759868284",
+    appId: "1:887759868284:web:c8e51ac6ed42ae1b1e94f9"
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
+  firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+
+  var lock = document.getElementById('lock');
+  var panel = document.getElementById('panel');
+  var emailInput = document.getElementById('email-input');
+  var pwInput = document.getElementById('pw-input');
+  var pwSubmit = document.getElementById('pw-submit');
+  var pwMsg = document.getElementById('pw-msg');
+
+  pwSubmit.addEventListener('click', function () {
+    var email = emailInput.value.trim();
+    var pw = pwInput.value;
+    if (!email || !pw) return;
+    pwSubmit.disabled = true;
+    pwMsg.textContent = '';
+    auth.signInWithEmailAndPassword(email, pw)
+      .catch(function (err) {
+        pwMsg.textContent = err.message || 'Sign-in failed.';
+      })
+      .finally(function () { pwSubmit.disabled = false; });
+  });
+  [emailInput, pwInput].forEach(function (el) {
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter') pwSubmit.click(); });
+  });
+
+  document.getElementById('signout-btn').addEventListener('click', function () {
+    auth.signOut();
+  });
+
+  auth.onAuthStateChanged(function (user) {
+    if (user) {
+      lock.style.display = 'none';
+      panel.style.display = 'block';
+      loadPosts();
+    } else {
+      lock.style.display = 'block';
+      panel.style.display = 'none';
+    }
+  });
+
+  // Default date to today
+  document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s == null ? '' : s;
+    return div.innerHTML;
+  }
+
+  function loadPosts() {
+    var listEl = document.getElementById('post-list-items');
+    var catList = document.getElementById('cat-list');
+    db.collection('posts').orderBy('date', 'desc').get()
+      .then(function (snap) {
+        if (snap.empty) {
+          listEl.innerHTML = '<p class="sub">No posts yet.</p>';
+          return;
+        }
+        var posts = [];
+        snap.forEach(function (doc) { posts.push(Object.assign({ id: doc.id }, doc.data())); });
+
+        var cats = Array.from(new Set(posts.map(function (p) { return p.category; })));
+        catList.innerHTML = cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">'; }).join('');
+
+        listEl.innerHTML = '';
+        posts.forEach(function (p) {
+          var row = document.createElement('div');
+          row.className = 'post-row';
+          row.innerHTML =
+            '<div class="info"><div class="t">' + escapeHtml(p.title) + '</div>' +
+            '<div class="m">' + escapeHtml(p.category) + ' · ' + escapeHtml(p.date) + '</div></div>';
+          var btn = document.createElement('button');
+          btn.textContent = 'Delete';
+          btn.addEventListener('click', function () { deletePost(p.id); });
+          row.appendChild(btn);
+          listEl.appendChild(row);
+        });
+      })
+      .catch(function (err) {
+        listEl.innerHTML = '<p class="sub">Couldn\u2019t load posts: ' + escapeHtml(err.message) + '</p>';
+      });
+  }
+
+  function deletePost(id) {
+    if (!confirm('Delete this post?')) return;
+    db.collection('posts').doc(id).delete()
+      .then(loadPosts)
+      .catch(function (err) { alert('Could not delete: ' + err.message); });
+  }
+
+  document.getElementById('publish-btn').addEventListener('click', function () {
+    var title = document.getElementById('f-title').value.trim();
+    var category = document.getElementById('f-category').value.trim() || 'General';
+    var date = document.getElementById('f-date').value;
+    var body = document.getElementById('f-body').value.trim();
+    var msg = document.getElementById('publish-msg');
+    var btn = document.getElementById('publish-btn');
+
+    if (!title || !body) {
+      msg.className = 'admin-msg err';
+      msg.textContent = 'Title and content are required.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+    msg.textContent = '';
+
+    db.collection('posts').add({
+      title: title,
+      category: category,
+      date: date,
+      body: body,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+      .then(function () {
+        msg.className = 'admin-msg ok';
+        msg.textContent = 'Published ✓';
+        document.getElementById('f-title').value = '';
+        document.getElementById('f-body').value = '';
+        loadPosts();
+      })
+      .catch(function (err) {
+        msg.className = 'admin-msg err';
+        msg.textContent = err.message || 'Something went wrong.';
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Publish';
+      });
+  });
+})();
+</script>
+</body>
+</html>
